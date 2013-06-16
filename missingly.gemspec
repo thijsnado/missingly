@@ -5,7 +5,7 @@ require 'missingly/version'
 
 Gem::Specification.new do |spec|
   spec.name          = "missingly"
-  spec.version       = MethodMissingImproved::VERSION
+  spec.version       = Missingly::VERSION
   spec.authors       = ["Thijs de Vries"]
   spec.email         = ["moger777@gmail.com"]
   spec.description   = %q{A DSL for defining method missing methods}
