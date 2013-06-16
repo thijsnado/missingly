@@ -1,10 +1,10 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'method_missing_improved/version'
+require 'missingly/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "method_missing_improved"
+  spec.name          = "missingly"
   spec.version       = MethodMissingImproved::VERSION
   spec.authors       = ["Thijs de Vries"]
   spec.email         = ["moger777@gmail.com"]
