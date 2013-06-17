@@ -30,9 +30,13 @@ module Missingly
 
         next unless matches
 
-        self.class._define_method(name, &method_block)
+        sub_name = name.to_s + '_with_matches'
+        self.class._define_method name do |*the_args, &the_block|
+          public_send(sub_name, matches, *the_args, &the_block)
+        end
+        self.class._define_method(sub_name, &method_block)
 
-        return public_send(name, matches, *args, &block)
+        return public_send(name, *args, &block)
       end
       super
     end

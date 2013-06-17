@@ -90,6 +90,18 @@ module Missingly
         instance.find_by_id_and_first_name(*args, &prock)
         Method.should === instance.method(:find_by_id_and_first_name)
       end
+
+      it "should work with subsequent calls" do
+        args = [1, 2, 3]
+        prock = Proc.new { puts 'foo' }
+        instance.find_by_id_and_first_name(*args, &prock)
+        instance.find_by_id_and_first_name(*args, &prock)
+
+        instance.expected_self.should == instance
+        instance.matched_text.should == 'id_and_first_name'
+        instance.args.should == args
+        instance.block.should == prock
+      end
     end
   end
 end
