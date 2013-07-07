@@ -19,7 +19,7 @@ module Missingly
 
     def respond_to_missing?(method_name, include_all)
       self.class.missingly_matchers.each do |matcher|
-        return true if matcher.should_respond_to?(method_name)
+        return true if matcher.should_respond_to?(method_name.to_sym)
       end
       super
     end
