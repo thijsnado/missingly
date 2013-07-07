@@ -50,11 +50,22 @@ module Missingly
         instance.respond_to?('foo').should == true
         instance.respond_to?('find_by_id').should == true
       end
+
+      it "should also work with arrays" do
+        our_class.module_eval do
+          handle_missingly [:derp, :herp] do
+          end
+        end
+
+        instance.respond_to?(:derp).should == true
+        instance.respond_to?(:herp).should == true
+        instance.respond_to?('derp').should == true
+      end
     end
 
     context "method_missing" do
       let(:our_class) do
-        class Foo
+        Class.new do
           include Missingly::Matchers
 
           attr_accessor :matched_text, :args, :block, :expected_self
@@ -69,8 +80,7 @@ module Missingly
       end
 
       let(:instance) do
-        our_class
-        Foo.new
+        our_class.new
       end
 
       it "should call method that matches regular expression on instances passing matches and args and block" do
@@ -99,6 +109,26 @@ module Missingly
 
         instance.expected_self.should == instance
         instance.matched_text.should == 'id_and_first_name'
+        instance.args.should == args
+        instance.block.should == prock
+      end
+
+      it "should also work with arrays, but just passes method name instead of match object" do
+        our_class.module_eval do
+          attr_reader :method_name
+          handle_missingly [:derp] do |method_name, *args, &block|
+            @expected_self = self
+            @method_name = method_name
+            @args = args
+            @block = block
+          end
+        end
+        args = [1, 2, 3]
+        prock = Proc.new { puts 'foo' }
+        instance.derp(*args, &prock)
+
+        instance.expected_self.should == instance
+        instance.method_name.should == :derp
         instance.args.should == args
         instance.block.should == prock
       end
