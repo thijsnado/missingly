@@ -15,6 +15,7 @@ module Missingly
       let(:instance) do
         our_class.new
       end
+
       it "should only respond to methods that match regular expression passed to missingly" do
         instance.respond_to?("find_by_id").should == true
         instance.respond_to?("fluffy_buffy_bunnies").should == false
@@ -49,17 +50,6 @@ module Missingly
         end
         instance.respond_to?('foo').should == true
         instance.respond_to?('find_by_id').should == true
-      end
-
-      it "should also work with arrays" do
-        our_class.module_eval do
-          handle_missingly [:derp, :herp] do
-          end
-        end
-
-        instance.respond_to?(:derp).should == true
-        instance.respond_to?(:herp).should == true
-        instance.respond_to?('derp').should == true
       end
     end
 
