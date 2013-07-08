@@ -1,10 +1,10 @@
 module Missingly
   module Matchers
     module ClassMethods
-      def handle_missingly(regular_expression_or_array, &block)
+      def handle_missingly(regular_expression_or_array, options={}, &block)
         case regular_expression_or_array
-        when Array then missingly_matchers << ArrayMatcher.new(regular_expression_or_array, block)
-        when Regexp then missingly_matchers << RegexMatcher.new(regular_expression_or_array, block)
+        when Array then missingly_matchers << ArrayMatcher.new(regular_expression_or_array, options, block)
+        when Regexp then missingly_matchers << RegexMatcher.new(regular_expression_or_array, options, block)
         end
       end
 
