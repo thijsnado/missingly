@@ -69,6 +69,45 @@ hashes = [
 instance = ArrayWithHashes.new(hashes)
 instance.find_by_name_and_gender('Pat', 'm') # { id: 2, name: 'Pat', gender: 'm' }
 instance.find_all_by_name('Pat') # both male and female Pat's
+instance.respond_to?(:find_by_name_and_gender) # true
+instance.method(:find_by_name_and_gender) # method object
+```
+
+### Use array matching
+
+```ruby
+class NetJSON
+  include Missingly::Matchers
+
+  handle_missingly [:get, :put, :post, :delete] do |method_name, url, params|
+    uri = URI.parse(url)
+
+    requester = Net::HTTP.new(uri.host, uri.port)
+    request = "Net::HTTP::#{method_name.to_s.classify}".constantize.new(uri.path)
+
+    request.body = params.to_json
+
+    requester.request(request)
+  end
+end
+
+requester = NetJSON.new
+requester.get 'http://www.example.com/some_path/', {first_name: 'John'}
+requester.put 'http://www.example.com/some_resource/1/', {admin: true}
+```
+
+### Use for delegation
+
+```ruby
+class UserDecorator
+  include Missingly::Matchers
+
+  handle_missingly [:roles], to: :user
+
+  def can_edit?
+    roles.include?(:editor)
+  end
+end
 ```
 
 ## Contributing
