@@ -10,7 +10,7 @@ module Missingly
       def missingly_writer(array, hash)
         writers = array.map { |x| (x.to_s + "=").to_sym }
         handle_missingly writers do |method_name, new_value|
-          @hash[(method_name.to_s[0..method_name.to_s.length - 2]).to_sym] = new_value
+          @hash[(method_name.to_s[0...-1]).to_sym] = new_value
         end
       end
       
