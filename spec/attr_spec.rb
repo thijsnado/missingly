@@ -6,7 +6,6 @@ class AttrTest
   missingly_reader [:foo], @hash
   missingly_writer [:bar], @hash
   missingly_accessor [:widget], @hash
-  missingly_accessor [:foo], @hash
   
   def initialize
     @hash = {foo: "rspec", bar: "rspec2", widget: "rspec3"}
