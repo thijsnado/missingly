@@ -6,7 +6,7 @@ module Missingly
       @regex, @method_block = regex, method_block
     end
 
-    def should_respond_to?(name)
+    def should_respond_to?(instance, name)
       regex.match(name)
     end
 

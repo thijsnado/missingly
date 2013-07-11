@@ -6,7 +6,7 @@ module Missingly
       @array, @method_block = array, method_block
     end
 
-    def should_respond_to?(name)
+    def should_respond_to?(instance, name)
       array.include?(name)
     end
 

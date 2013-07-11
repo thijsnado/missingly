@@ -17,7 +17,10 @@ module Missingly
       end
 
       def setup_delegation_handlers(regular_expression_or_array, to)
-        raise "not implemented"
+        case regular_expression_or_array
+        when Array then missingly_matchers << ArrayDelegateMatcher.new(regular_expression_or_array, to)
+        when Regexp then missingly_matchers << RegexDelegateMatcher.new(regular_expression_or_array, to)
+        end
       end
 
       def missingly_matchers
@@ -31,7 +34,7 @@ module Missingly
 
     def respond_to_missing?(method_name, include_all)
       self.class.missingly_matchers.each do |matcher|
-        return true if matcher.should_respond_to?(method_name.to_sym)
+        return true if matcher.should_respond_to?(self, method_name.to_sym)
       end
       super
     end
@@ -39,7 +42,7 @@ module Missingly
 
     def method_missing(method_name, *args, &block)
       self.class.missingly_matchers.each do |matcher|
-        next unless matcher.should_respond_to?(method_name)
+        next unless matcher.should_respond_to?(self, method_name)
 
         return matcher.handle(self, method_name, *args, &block)
       end
