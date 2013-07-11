@@ -18,9 +18,6 @@ module Missingly
       
       def inherited(subclass)
         subclass.extend Missingly::Matchers::ClassMethods
-        subclass._define_method(:missingly_matchers) do
-          @missingly_matchers ||= []
-        end
         self.missingly_matchers.each do |matcher|
           subclass.missingly_matchers << matcher
         end
