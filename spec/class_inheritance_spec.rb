@@ -1,20 +1,23 @@
 require 'spec_helper'
 
-class Foo
-  include Missingly::Matchers
-  
-  handle_missingly [:foo] do |method|
-    return method
-  end
-end
-
-class Bar < Foo
-end
-
 describe Missingly::Matchers do
+  let(:super_class) do
+    Class.new do
+      include Missingly::Matchers
+  
+      handle_missingly [:foo] do |method|
+        return method
+      end
+    end 
+  end
+  
+  let(:subclass) do
+    Class.new(super_class) do
+    end
+  end
+  
   it "should work with an inherited class" do
-    f = Foo.new
-    b = Bar.new
+    b = subclass.new
     b.foo.should eq :foo
   end
 end
