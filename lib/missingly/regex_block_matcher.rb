@@ -1,20 +1,21 @@
 module Missingly
-  class ArrayBlockMatcher
-    attr_reader :array, :method_block
+  class RegexBlockMatcher
+    attr_reader :regex, :method_block
 
-    def initialize(array, method_block)
-      @array, @method_block = array, method_block
+    def initialize(regex, method_block)
+      @regex, @method_block = regex, method_block
     end
 
     def should_respond_to?(name)
-      array.include?(name)
+      regex.match(name)
     end
 
     def handle(instance, method_name, *args, &block)
-      sub_name = "#{method_name}_with_method_name"
+      matches = regex.match method_name
 
+      sub_name = "#{method_name}_with_matches"
       instance.class._define_method method_name do |*the_args, &the_block|
-        public_send(sub_name, method_name, *the_args, &the_block)
+        public_send(sub_name, matches, *the_args, &the_block)
       end
       instance.class._define_method(sub_name, &method_block)
 

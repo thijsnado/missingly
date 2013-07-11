@@ -2,10 +2,22 @@ module Missingly
   module Matchers
     module ClassMethods
       def handle_missingly(regular_expression_or_array, options={}, &block)
-        case regular_expression_or_array
-        when Array then missingly_matchers << ArrayMatcher.new(regular_expression_or_array, options, block)
-        when Regexp then missingly_matchers << RegexMatcher.new(regular_expression_or_array, options, block)
+        if block_given?
+          setup_block_handlers(regular_expression_or_array, &block)
+        elsif options[:to]
+          setup_delegation_handlers(regular_expression_or_array, options[:to])
         end
+      end
+
+      def setup_block_handlers(regular_expression_or_array, &block)
+        case regular_expression_or_array
+        when Array then missingly_matchers << ArrayBlockMatcher.new(regular_expression_or_array, block)
+        when Regexp then missingly_matchers << RegexBlockMatcher.new(regular_expression_or_array, block)
+        end
+      end
+
+      def setup_delegation_handlers(regular_expression_or_array, to)
+        raise "not implemented"
       end
 
       def missingly_matchers
