@@ -15,6 +15,16 @@ module Missingly
       def _define_method(*args, &block)
         define_method(*args, &block)
       end
+      
+      def inherited(subclass)
+        subclass.extend Missingly::Matchers::ClassMethods
+        subclass._define_method(:missingly_matchers) do
+          @missingly_matchers ||= []
+        end
+        self.missingly_matchers.each do |matcher|
+          subclass.missingly_matchers << matcher
+        end
+      end
     end
 
     def respond_to_missing?(method_name, include_all)
