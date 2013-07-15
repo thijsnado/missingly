@@ -3,13 +3,13 @@ module Missingly
     module ClassMethods
       def handle_missingly(regular_expression_or_array, options={}, &block)
         case regular_expression_or_array
-        when Array then missingly_matchers << ArrayMatcher.new(regular_expression_or_array, options, block)
-        when Regexp then missingly_matchers << RegexMatcher.new(regular_expression_or_array, options, block)
+        when Array then missingly_matchers[regular_expression_or_array] = ArrayMatcher.new(regular_expression_or_array, options, block)
+        when Regexp then missingly_matchers[regular_expression_or_array] = RegexMatcher.new(regular_expression_or_array, options, block)
         end
       end
 
       def missingly_matchers
-        @missingly_matchers ||= []
+        @missingly_matchers ||= {}
       end
 
       def _define_method(*args, &block)
@@ -17,15 +17,15 @@ module Missingly
       end
 
       def inherited(subclass)
-        subclass.extend Missingly::Matchers::ClassMethods
-        self.missingly_matchers.each do |matcher|
-          subclass.missingly_matchers << matcher
+        matchers = self.missingly_matchers
+        subclass.module_eval do
+          @missingly_matchers =  matchers
         end
       end
     end
 
     def respond_to_missing?(method_name, include_all)
-      self.class.missingly_matchers.each do |matcher|
+      self.class.missingly_matchers.values.each do |matcher|
         return true if matcher.should_respond_to?(method_name.to_sym)
       end
       super
@@ -33,7 +33,7 @@ module Missingly
     private :respond_to_missing?
 
     def method_missing(method_name, *args, &block)
-      self.class.missingly_matchers.each do |matcher|
+      self.class.missingly_matchers.values.each do |matcher|
         next unless matcher.should_respond_to?(method_name)
 
         return matcher.handle(self, method_name, *args, &block)
