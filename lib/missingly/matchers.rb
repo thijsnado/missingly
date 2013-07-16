@@ -12,25 +12,25 @@ module Missingly
       end
 
       def setup_custom_handler(matcher, options={}, &block)
-        missingly_matchers << matcher.new(options, block)
+        missingly_matchers[matcher] = matcher.new(options, block)
       end
 
       def setup_block_handlers(matcher, &block)
         case matcher
-        when Array then missingly_matchers << ArrayBlockMatcher.new(matcher, block)
-        when Regexp then missingly_matchers << RegexBlockMatcher.new(matcher, block)
+        when Array then missingly_matchers[matcher] = ArrayBlockMatcher.new(matcher, block)
+        when Regexp then missingly_matchers[matcher] = RegexBlockMatcher.new(matcher, block)
         end
       end
 
       def setup_delegation_handlers(matcher, to)
         case matcher
-        when Array then missingly_matchers << ArrayDelegateMatcher.new(matcher, to)
-        when Regexp then missingly_matchers << RegexDelegateMatcher.new(matcher, to)
+        when Array then missingly_matchers[matcher] = ArrayDelegateMatcher.new(matcher, to)
+        when Regexp then missingly_matchers[matcher] = RegexDelegateMatcher.new(matcher, to)
         end
       end
 
       def missingly_matchers
-        @missingly_matchers ||= []
+        @missingly_matchers ||= {}
       end
 
       def _define_method(*args, &block)
@@ -38,15 +38,15 @@ module Missingly
       end
 
       def inherited(subclass)
-        subclass.extend Missingly::Matchers::ClassMethods
-        self.missingly_matchers.each do |matcher|
-          subclass.missingly_matchers << matcher
+        matchers = self.missingly_matchers
+        subclass.module_eval do
+          @missingly_matchers =  matchers.clone
         end
       end
     end
 
     def respond_to_missing?(method_name, include_all)
-      self.class.missingly_matchers.each do |matcher|
+      self.class.missingly_matchers.values.each do |matcher|
         return true if matcher.should_respond_to?(self, method_name.to_sym)
       end
       super
@@ -54,7 +54,7 @@ module Missingly
     private :respond_to_missing?
 
     def method_missing(method_name, *args, &block)
-      self.class.missingly_matchers.each do |matcher|
+      self.class.missingly_matchers.values.each do |matcher|
         next unless matcher.should_respond_to?(self, method_name)
 
         return matcher.handle(self, method_name, *args, &block)

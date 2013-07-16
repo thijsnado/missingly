@@ -20,4 +20,14 @@ describe Missingly::Matchers do
     b = subclass.new
     b.foo.should eq :foo
   end
+
+  it "should allow override of parent class" do
+    subclass.module_eval do
+      handle_missingly [:foo] do |method|
+        :super_duper
+      end
+    end
+
+    subclass.new.foo.should eq :super_duper
+  end
 end
