@@ -19,7 +19,7 @@ module Missingly
       def inherited(subclass)
         matchers = self.missingly_matchers
         subclass.module_eval do
-          @missingly_matchers =  matchers
+          @missingly_matchers =  matchers.clone
         end
       end
     end
