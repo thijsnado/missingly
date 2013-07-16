@@ -3,21 +3,16 @@ require 'spec_helper'
 module Missingly
   describe Matchers do
     let(:find_by_matcher) do
-      FindByMatcher = Class.new(Missingly::BlockMatcher) do
+      FindByMatcher = Class.new(Missingly::RegexBlockMatcher) do
         attr_reader :method_block
 
-        REGEX = /^find_by_(\w+)$/
-
-        def initialize(options, block)
+        def initialize(regex, options, block)
+          @regex = regex
           @method_block = block
         end
 
-        def should_respond_to?(_, method_name)
-          REGEX.match(method_name)
-        end
-
         def setup_method_name_args(method_name)
-          matches = REGEX.match(method_name)
+          matches = regex.match(method_name)
           matches[1].split("_and_").map(&:to_sym)
         end
       end
@@ -33,7 +28,7 @@ module Missingly
           @hashes = hashes
         end
 
-        handle_missingly FindByMatcher do |fields, *args|
+        handle_missingly /^find_by_(\w+)$/, with: FindByMatcher do |fields, *args|
           hashes.find do |hash|
             fields.inject(true) do |fields_match, field|
               index_of_field = fields.index(field)

@@ -2,7 +2,7 @@ module Missingly
   module Matchers
     module ClassMethods
       def handle_missingly(matcher, options={}, &block)
-        if matcher.is_a? Class
+        if options[:with]
           setup_custom_handler(matcher, options, &block)
         elsif block_given?
           setup_block_handlers(matcher, &block)
@@ -12,7 +12,7 @@ module Missingly
       end
 
       def setup_custom_handler(matcher, options={}, &block)
-        missingly_matchers[matcher] = matcher.new(options, block)
+        missingly_matchers[matcher] = options[:with].new(matcher, options, block)
       end
 
       def setup_block_handlers(matcher, &block)
