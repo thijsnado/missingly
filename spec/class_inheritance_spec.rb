@@ -16,18 +16,33 @@ describe Missingly::Matchers do
     end
   end
 
-  it "should work with an inherited class" do
+  it "should work when called before parent" do
     b = subclass.new
     b.foo.should eq :foo
   end
 
-  it "should allow override of parent class" do
-    subclass.module_eval do
-      handle_missingly [:foo] do |method|
-        :super_duper
+  describe "overriding methods" do
+    let(:subclass_with_overrides) do
+      Class.new(super_class) do
+        handle_missingly [:foo] do |method|
+          :super_duper
+        end
       end
     end
 
-    subclass.new.foo.should eq :super_duper
+    it "should work when called before parent" do
+      subclass_with_overrides.new.foo.should eq :super_duper
+    end
+
+    it "should work when called after parent" do
+      super_class.new.foo
+      subclass_with_overrides.new.foo.should eq :super_duper
+    end
+
+    it "should work when subclass initiated before parent method defined" do
+      subclass_with_overrides
+      super_class.new.foo
+      subclass_with_overrides.new.foo.should eq :super_duper
+    end
   end
 end
