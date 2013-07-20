@@ -2,6 +2,8 @@
 
 A DSL for handling method\_missing hooks.
 
+[![Code Climate](https://codeclimate.com/github/moger777/missingly.png)](https://codeclimate.com/github/moger777/missingly)
+
 ## Installation
 
 Add this line to your application's Gemfile:
