@@ -11,11 +11,11 @@ module Missingly
       end
     end
 
-    let(:proxy){ stub }
+    let(:proxy){ double }
 
     let(:instance) do
       i = our_class.new
-      i.stub(:proxy).and_return(proxy)
+      allow(i).to receive(:proxy).and_return(proxy)
       i
     end
 
