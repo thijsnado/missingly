@@ -11,5 +11,7 @@ module Missingly
       delegate_responds_to = instance.send(delegate_name).respond_to?(name)
       included_in_array && delegate_responds_to
     end
+
+    def matchable; array; end
   end
 end

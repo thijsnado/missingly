@@ -11,5 +11,7 @@ module Missingly
       delegate_responds_to = instance.send(delegate_name).respond_to?(name)
       matches && delegate_responds_to
     end
+
+    def matchable; regex; end
   end
 end

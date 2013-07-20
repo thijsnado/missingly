@@ -13,5 +13,7 @@ module Missingly
     def setup_method_name_args(method_name)
       regex.match method_name
     end
+
+    def matchable; regex; end
   end
 end

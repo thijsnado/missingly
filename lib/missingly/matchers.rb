@@ -12,7 +12,7 @@ module Missingly
   module Matchers
     module ClassMethods
       def handle_missingly(matcher, options={}, &block)
-        undef_parent_missingly_methods regular_expression_or_array
+        undef_parent_missingly_methods matcher
 
         if options[:with]
           setup_custom_handler(matcher, options, &block)

@@ -13,5 +13,7 @@ module Missingly
     def setup_method_name_args(method_name)
       method_name
     end
+
+    def matchable; array; end
   end
 end
