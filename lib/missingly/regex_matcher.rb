@@ -6,6 +6,10 @@ module Missingly
       @regex, @options, @method_block = regex, options, method_block
     end
 
+    def matchable
+      regex
+    end
+
     def should_respond_to?(name)
       regex.match(name)
     end

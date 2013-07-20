@@ -6,6 +6,10 @@ module Missingly
       @array, @options, @method_block = array, options, method_block
     end
 
+    def matchable
+      array
+    end
+
     def should_respond_to?(name)
       array.include?(name)
     end
