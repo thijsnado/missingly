@@ -1,6 +1,14 @@
 require 'thread'
 
 module Missingly
+  module Mutex
+    @mutex = ::Mutex.new
+
+    def self.synchronize(&block)
+      @mutex.synchronize(&block)
+    end
+  end
+
   module Matchers
     module ClassMethods
       def handle_missingly(regular_expression_or_array, options={}, &block)
@@ -61,15 +69,17 @@ module Missingly
       self.class.missingly_matchers.values.each do |matcher|
         next unless matcher.should_respond_to?(method_name)
 
-        self.class.missingly_methods_for_matcher(matcher.matchable) << method_name
+        Missingly::Mutex.synchronize do
+          self.class.missingly_methods_for_matcher(matcher.matchable) << method_name
 
-        returned_value = matcher.handle(self, method_name, *args, &block)
+          returned_value = matcher.handle(self, method_name, *args, &block)
 
-        self.class.missingly_subclasses.each do |subclass|
-          subclass.undef_parent_missingly_methods matcher.matchable
+          self.class.missingly_subclasses.each do |subclass|
+            subclass.undef_parent_missingly_methods matcher.matchable
+          end
+
+          return returned_value
         end
-
-        return returned_value
       end
       super
     end
