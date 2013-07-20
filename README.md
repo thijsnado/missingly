@@ -3,6 +3,7 @@
 A DSL for handling method\_missing hooks.
 
 [![Code Climate](https://codeclimate.com/github/moger777/missingly.png)](https://codeclimate.com/github/moger777/missingly)
+[![Build Status](https://travis-ci.org/moger777/missingly.png?branch=master)](https://travis-ci.org/moger777/missingly)
 
 ## Installation
 
