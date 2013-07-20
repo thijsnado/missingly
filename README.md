@@ -112,6 +112,162 @@ class UserDecorator
 end
 ```
 
+### Use custom matchers
+
+In the example with the regex block matchers, our code has to do a
+fair amount of work which is not looking up a value in a hash, for example:
+
+```ruby
+fields = matches[1].split("_and_")
+```
+
+will run every time and can have a performance impact. Likewise we
+are always running:
+
+```ruby
+field.to_sym
+```
+
+In the hash lookup. If the field was already a symbol, there would be less work. And
+the fields were already split up, there would be less work each time. Custom block
+matchers can be done as follows:
+
+```ruby
+class OurMatcher < Missingly::BlockMatcher
+  attr_reader :some_matcher, :options_hash, :method_block
+
+  def initialize(some_matcher, options_hash, method_block)
+    @some_matcher, @method_block = some_matcher, method_block
+  end
+
+  def should_respond_to?(instance, name)
+    # our custom code
+  end
+
+  def setup_method_name_args(method_name)
+    # args we will pass to block
+  end
+
+  def matchable; some_matcher; end
+end
+```
+
+Since we essentially want to re-use the regex block helper, we can inherit and override
+setup_method_name_args. These args will be passed to the block in the handle_missingly
+call:
+
+```ruby
+class FindByFieldsWithAndsMatcher < Missingly::RegexBlockMatcher
+  def initialize(regex, options, block)
+    super regex, block
+  end
+
+  def setup_method_name_args(method_name)
+    matches = regex.match(method_name)
+    fields = matches[1].split("_and_")
+    fields.map(&:to_sym)
+  end
+end
+```
+
+From here, we can use our custom matcher:
+
+```ruby
+class ArrayWithHashes
+  include Missingly::Matchers
+
+  handle_missingly /^find_by_(\w+)$/, with: FindByFieldsWithAndsMatcher do |fields, *args, &block|
+    hashes.find do |hash|
+      fields.inject(true) do |fields_match, field|
+        index_of_field = fields.index(field)
+        arg_for_field = args[index_of_field]
+
+        fields_match = fields_match && hash[field] == arg_for_field
+        break false unless fields_match
+        true
+      end
+    end
+  end
+
+  attr_reader :hashes
+
+  def initialize(hashes)
+    @hashes = hashes
+  end
+end
+
+hashes = [
+  { id: 1, name: 'Pat', gender: 'f' },
+  { id: 2, name: 'Pat', gender: 'm' },
+  { id: 3, name: 'Steve', gender: 'm' },
+  { id: 4, name: 'Sue', gender: 'f' },
+]
+
+instance = ArrayWithHashes.new(hashes)
+instance.find_by_name_and_gender('Pat', 'm') # { id: 2, name: 'Pat', gender: 'm' }
+instance.respond_to?(:find_by_name_and_gender) # true
+instance.method(:find_by_name_and_gender) # method object
+```
+
+For more fine grain controll, you can write should_respond_to? which should
+return true if method responds to, and handle, which should define method and
+return results of first run of method.
+
+### How inheritance works
+
+The handle_missingly method is designed to be both inherited and overwritable by
+child classes. The following scenarios should work:
+
+Straight up inheritance:
+
+```ruby
+class Parent
+  handle_missingly /foo/ do
+    :foo
+  end
+end
+
+class Child < Parent
+end
+
+Child.new.foo # should return :foo
+```
+
+Overwriting:
+
+```ruby
+class Parent
+  handle_missingly /foo/ do
+    :foo
+  end
+end
+
+class Child < Parent
+  handle_missingly /foo/ do
+    :bar
+  end
+end
+
+Child.new.foo # should return :bar
+```
+
+Missingly handlers are based off of "matchable" passed to matcher, so the following
+will also be overwritten:
+
+```ruby
+class Parent
+  handle_missingly /foo/ do
+    :foo
+  end
+end
+
+class Child < Parent
+  handle_missingly /foo/, to: :something
+end
+
+Child.new.foo # should return whatever something returns
+```
+
 ## Contributing
 
 1. Fork it
@@ -119,3 +275,5 @@ end
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
+6. Please no tabs or trailing whitespace
+7. Features and bug fixes should have specs
