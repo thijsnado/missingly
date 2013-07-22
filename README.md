@@ -160,6 +160,8 @@ call:
 
 ```ruby
 class FindByFieldsWithAndsMatcher < Missingly::RegexBlockMatcher
+  attr_reader :options
+
   def initialize(regex, options, block)
     super regex, block
   end

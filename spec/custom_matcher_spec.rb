@@ -4,10 +4,11 @@ module Missingly
   describe Matchers do
     let(:find_by_matcher) do
       FindByMatcher = Class.new(Missingly::RegexBlockMatcher) do
-        attr_reader :method_block
+        attr_reader :method_block, :options
 
         def initialize(regex, options, block)
           @regex = regex
+          @options = options
           @method_block = block
         end
 
