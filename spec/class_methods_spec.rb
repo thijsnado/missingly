@@ -1,0 +1,32 @@
+require 'spec_helper'
+
+describe Missingly::Matchers do
+  let(:search_class) do
+    Class.new do
+      include Missingly::Matchers
+      
+      handle_missingly [:find_by_name], class_method: true do |name|
+        return {foo: 'bar'}
+      end
+      
+      handle_missingly /^find_all_by_(\w+)$/, class_method: true do |matches, *args, &block|
+        return matches
+      end
+    end
+  end
+  
+  it "should not break normal method_missing" do
+    search_class.new.respond_to?("foo_bar_widget").should be_false
+  end
+  
+  it "should allow you to define class methods" do
+    search_class.respond_to?("find_by_name").should be_true
+    search_class.respond_to?("find_all_by_name").should be_true
+    search_class.find_all_by_name.should be_a MatchData
+    search_class.find_by_name.should be_a Hash
+  end
+  
+  it "should not make class methods avliable to instances" do
+    search_class.new.respond_to?("find_by_name").should be_false
+  end
+end

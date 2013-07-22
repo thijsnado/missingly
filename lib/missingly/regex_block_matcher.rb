@@ -1,9 +1,9 @@
 module Missingly
   class RegexBlockMatcher < BlockMatcher
-    attr_reader :regex, :method_block
+    attr_reader :regex, :method_block, :options
 
-    def initialize(regex, method_block)
-      @regex, @method_block = regex, method_block
+    def initialize(regex, options, method_block)
+      @regex, @options, @method_block = regex, options, method_block
     end
 
     def should_respond_to?(instance, name)

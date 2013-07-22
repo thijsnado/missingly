@@ -1,9 +1,9 @@
 module Missingly
   class ArrayDelegateMatcher < DelegateMatcher
-    attr_reader :array, :delegate_name
+    attr_reader :array, :options, :delegate_name
 
-    def initialize(array, delegate_name)
-      @array, @delegate_name = array, delegate_name
+    def initialize(array, options, delegate_name)
+      @array, @options, @delegate_name = array, options, delegate_name
     end
 
     def should_respond_to?(instance, name)

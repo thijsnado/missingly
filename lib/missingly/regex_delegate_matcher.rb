@@ -1,9 +1,9 @@
 module Missingly
   class RegexDelegateMatcher < DelegateMatcher
-    attr_reader :regex, :delegate_name
+    attr_reader :regex, :options, :delegate_name
 
-    def initialize(regex, delegate_name)
-      @regex, @delegate_name = regex, delegate_name
+    def initialize(regex, options, delegate_name)
+      @regex, @options, @delegate_name = regex, options, delegate_name
     end
 
     def should_respond_to?(instance, name)
