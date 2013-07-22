@@ -28,5 +28,6 @@ describe Missingly::Matchers do
   
   it "should not make class methods avliable to instances" do
     search_class.new.respond_to?("find_by_name").should be_false
+    lambda { search_class.new.find_by_name("foo") }.should raise_exception
   end
 end

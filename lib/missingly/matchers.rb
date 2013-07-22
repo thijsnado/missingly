@@ -22,12 +22,7 @@ module Missingly
           setup_delegation_handlers(matcher, options, options[:to])
         end
       end
-      
-      def setup_class_methods(matcher, options, &block)
-        meta_class = class << self; self; end
-        
-      end
-      
+            
       def setup_custom_handler(matcher, options, &block)
         missingly_matchers[matcher] = options[:with].new(matcher, options, block)
       end
@@ -95,17 +90,23 @@ module Missingly
               subclass.undef_parent_missingly_methods matcher.matchable
             end
 
-            return returned_value if matcher.options[:class_method]
+            return returned_value
           end
         end
         super
       end
       
       def respond_to_missing?(method_name, include_all)
-        missingly_matchers.values.each do |matcher|
+        self.missingly_matchers.values.each do |matcher|
           return true if matcher.should_respond_to?(self, method_name.to_sym) && matcher.filter_class_methods(self)
         end
         super
+      end
+      
+      def _respond_to_missing?(method_name, matchers, klass)
+        matchers.values.each do |matcher|
+          return true if matcher.should_respond_to?(klass, method_name.to_sym) && matcher.filter_class_methods(klass)
+        end
       end
     end
 
@@ -120,6 +121,7 @@ module Missingly
     def method_missing(method_name, *args, &block)
       self.class.missingly_matchers.values.each do |matcher|
         next unless matcher.should_respond_to?(self, method_name)
+        next if matcher.options[:class_method]
 
         Missingly::Mutex.synchronize do
           self.class.missingly_methods_for_matcher(matcher.matchable) << method_name
