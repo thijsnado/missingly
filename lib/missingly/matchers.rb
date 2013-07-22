@@ -98,21 +98,15 @@ module Missingly
       
       def respond_to_missing?(method_name, include_all)
         self.missingly_matchers.values.each do |matcher|
-          return true if matcher.should_respond_to?(self, method_name.to_sym) && matcher.filter_class_methods(self)
+          return true if matcher.should_respond_to?(self, method_name.to_sym) && matcher.options[:class_method]
         end
         super
-      end
-      
-      def _respond_to_missing?(method_name, matchers, klass)
-        matchers.values.each do |matcher|
-          return true if matcher.should_respond_to?(klass, method_name.to_sym) && matcher.filter_class_methods(klass)
-        end
       end
     end
 
     def respond_to_missing?(method_name, include_all)
       self.class.missingly_matchers.values.each do |matcher|
-        return true if matcher.should_respond_to?(self, method_name.to_sym) && matcher.filter_class_methods(self)
+        return true if matcher.should_respond_to?(self, method_name.to_sym) && !(matcher.options[:class_method])
       end
       super
     end

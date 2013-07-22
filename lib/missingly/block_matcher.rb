@@ -32,14 +32,5 @@ module Missingly
       end
       klass._define_method(sub_name, &method_block)
     end
-    
-    def filter_class_methods(klass)
-      if klass.class == Class
-        return true if @options[:class_method]
-      else
-        return true unless @options[:class_method]
-      end
-      return false
-    end
   end
 end
