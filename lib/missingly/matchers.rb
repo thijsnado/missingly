@@ -80,6 +80,7 @@ module Missingly
       def method_missing(method_name, *args, &block)
         missingly_matchers.values.each do |matcher|
           next unless matcher.should_respond_to?(self, method_name)
+          next unless matcher.options[:class_method]
 
           Missingly::Mutex.synchronize do
             missingly_methods_for_matcher(matcher.matchable) << method_name
