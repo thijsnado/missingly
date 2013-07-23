@@ -15,6 +15,19 @@ describe Missingly::Matchers do
     end
   end
   
+  let(:delegation_test) do
+    Class.new do
+      include Missingly::Matchers
+      
+      handle_missingly [:find_by_foo], to: :proxy, class_method: true
+      
+      def self.proxy
+        OpenStruct.new({find_by_foo: "foo"})
+      end
+    end
+  end
+  
+  
   it "should not break normal method_missing" do
     search_class.new.respond_to?("foo_bar_widget").should be_false
   end
@@ -24,6 +37,11 @@ describe Missingly::Matchers do
     search_class.respond_to?("find_all_by_name").should be_true
     search_class.find_all_by_name.should be_a MatchData
     search_class.find_by_name.should be_a Hash
+  end
+  
+  it "should support delegation matchers" do
+    delegation_test.respond_to?("find_by_foo").should be_true
+    delegation_test.find_by_foo.should be_true
   end
   
   it "should not make class methods avliable to instances" do
