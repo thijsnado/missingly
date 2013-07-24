@@ -22,7 +22,7 @@ module Missingly
           setup_delegation_handlers(matcher, options, options[:to])
         end
       end
-            
+
       def setup_custom_handler(matcher, options, &block)
         missingly_matchers[matcher] = options[:with].new(matcher, options, block)
       end
@@ -84,7 +84,7 @@ module Missingly
         end
         missingly_subclasses << subclass
       end
-      
+
       def method_missing(method_name, *args, &block)
         missingly_matchers.values.each do |matcher|
           next unless matcher.should_respond_to?(self, method_name)
@@ -104,7 +104,7 @@ module Missingly
         end
         super
       end
-      
+
       def respond_to_missing?(method_name, include_all)
         self.missingly_matchers.values.each do |matcher|
           return true if matcher.should_respond_to?(self, method_name.to_sym) && matcher.options[:class_method]
@@ -140,7 +140,7 @@ module Missingly
       end
       super
     end
-    
+
     private
 
     def self.included(klass)
