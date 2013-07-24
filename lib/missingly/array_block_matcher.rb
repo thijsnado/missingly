@@ -1,9 +1,9 @@
 module Missingly
   class ArrayBlockMatcher < BlockMatcher
-    attr_reader :array, :method_block
+    attr_reader :array, :method_block, :options
 
-    def initialize(array, method_block)
-      @array, @method_block = array, method_block
+    def initialize(array, options, method_block)
+      @array, @method_block, @options = array, method_block, options
     end
 
     def should_respond_to?(instance, name)
