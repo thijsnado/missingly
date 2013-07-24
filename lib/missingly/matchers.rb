@@ -45,7 +45,15 @@ module Missingly
         return unless superclass.respond_to?(:missingly_methods_for_matcher)
 
         superclass.missingly_methods_for_matcher(matcher).each do |method|
-          undef_method method
+          begin
+            undef_method method
+          rescue NameError
+            eval <<-RUBY
+              class << self
+                undef_method #{method.inspect}
+              end
+            RUBY
+          end
         end
       end
 
