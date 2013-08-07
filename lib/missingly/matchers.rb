@@ -129,7 +129,7 @@ module Missingly
         Missingly::Mutex.synchronize do
           self.class.missingly_methods_for_matcher(matcher.matchable) << method_name
 
-          matcher.define(self, method_name, *args, &block)
+          matcher.define(self, method_name)
 
           self.class.missingly_subclasses.each do |subclass|
             subclass.undef_parent_missingly_methods matcher.matchable
