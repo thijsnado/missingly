@@ -1,6 +1,6 @@
 module Missingly
   class BlockMatcher
-    def handle(instance, method_name, *args, &block)
+    def define(instance, method_name, *args, &block)
 
       klass = instance.class == Class ? instance : instance.class
 
@@ -9,8 +9,6 @@ module Missingly
       else
         define_instance_method(klass, method_name)
       end
-
-      instance.public_send(method_name, *args, &block)
     end
 
     def define_class_method(klass, method_name)

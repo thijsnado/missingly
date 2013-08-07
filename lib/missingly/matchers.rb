@@ -93,13 +93,13 @@ module Missingly
           Missingly::Mutex.synchronize do
             missingly_methods_for_matcher(matcher.matchable) << method_name
 
-            returned_value = matcher.handle(self, method_name, *args, &block)
+            returned_value = matcher.define(self, method_name, *args, &block)
 
             missingly_subclasses.each do |subclass|
               subclass.undef_parent_missingly_methods matcher.matchable
             end
 
-            return returned_value
+            return public_send(method_name, *args, &block)
           end
         end
         super
@@ -129,13 +129,13 @@ module Missingly
         Missingly::Mutex.synchronize do
           self.class.missingly_methods_for_matcher(matcher.matchable) << method_name
 
-          returned_value = matcher.handle(self, method_name, *args, &block)
+          matcher.define(self, method_name, *args, &block)
 
           self.class.missingly_subclasses.each do |subclass|
             subclass.undef_parent_missingly_methods matcher.matchable
           end
 
-          return returned_value unless matcher.options[:class_method]
+          return public_send(method_name, *args, &block)
         end
       end
       super
