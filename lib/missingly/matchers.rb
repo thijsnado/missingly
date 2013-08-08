@@ -13,6 +13,7 @@ module Missingly
     module ClassMethods
       def handle_missingly(matcher, options={}, &block)
         undef_parent_missingly_methods matcher
+        undef_normal_missingly_methods matcher
 
         if options[:with]
           setup_custom_handler(matcher, options, &block)
@@ -44,7 +45,15 @@ module Missingly
       def undef_parent_missingly_methods(matcher)
         return unless superclass.respond_to?(:missingly_methods_for_matcher)
 
-        superclass.missingly_methods_for_matcher(matcher).each do |method|
+        undef_missingly_methods(superclass.missingly_methods_for_matcher(matcher))
+      end
+
+      def undef_normal_missingly_methods(matcher)
+        undef_missingly_methods(missingly_methods_for_matcher(matcher))
+      end
+
+      def undef_missingly_methods(methods)
+        methods.each do |method|
           begin
             undef_method method
           rescue NameError
