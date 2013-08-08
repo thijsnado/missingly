@@ -55,13 +55,6 @@ module Missingly
         instance.block.should == prock
       end
 
-      it "should define the method on call preventing further method missing calls on same class" do
-        args = [1, 2, 3]
-        prock = Proc.new { puts 'foo' }
-        instance.derp(*args, &prock)
-        Method.should === instance.method(:derp)
-      end
-
       it "should work with subsequent calls" do
         args = [1, 2, 3]
         prock = Proc.new { puts 'foo' }
