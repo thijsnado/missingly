@@ -43,9 +43,15 @@ module Missingly
       end
 
       def undef_parent_missingly_methods(matcher)
-        return unless superclass.respond_to?(:missingly_methods_for_matcher)
+        superclass = self.superclass
+        matchers = []
 
-        undef_missingly_methods(superclass.missingly_methods_for_matcher(matcher))
+        while superclass.respond_to?(:missingly_methods_for_matcher)
+          matchers.concat superclass.missingly_methods_for_matcher(matcher)
+          superclass = superclass.superclass
+        end
+
+        undef_missingly_methods(matchers)
       end
 
       def undef_normal_missingly_methods(matcher)

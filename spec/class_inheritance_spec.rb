@@ -22,8 +22,13 @@ describe Missingly::Matchers do
   end
 
   describe "overriding methods" do
-    let(:subclass_with_overrides) do
+    let(:another_inheritance_layer) do
       Class.new(super_class) do
+      end
+    end
+
+    let(:subclass_with_overrides) do
+      Class.new(another_inheritance_layer) do
         handle_missingly [:foo] do |method|
           :super_duper
         end
@@ -57,8 +62,13 @@ describe Missingly::Matchers do
       end
     end
 
-    let(:subclass_with_overrides) do
+    let(:another_inheritance_layer) do
       Class.new(super_class) do
+      end
+    end
+
+    let(:subclass_with_overrides) do
+      Class.new(another_inheritance_layer) do
         handle_missingly [:foo], class_method: true do |_|
           :super_duper
         end
