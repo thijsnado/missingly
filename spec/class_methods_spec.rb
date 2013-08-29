@@ -5,8 +5,8 @@ describe Missingly::Matchers do
     Class.new do
       include Missingly::Matchers
 
-      handle_missingly [:find_by_name], class_method: true do |name|
-        return {foo: 'bar'}
+      handle_missingly [:find_by_name], class_method: true do |method_name, *args|
+        return {foo: args.first || 'bar'}
       end
 
       handle_missingly /^find_all_by_(\w+)$/, class_method: true do |matches, *args, &block|
@@ -42,7 +42,7 @@ describe Missingly::Matchers do
     delegation_test.find_by_foo.should be_true
   end
 
-  it "should not make class methods avliable to instances" do
+  it "should not make class methods available to instances" do
     search_class.new.respond_to?("find_by_name").should be_false
     lambda { search_class.new.find_by_name("foo") }.should raise_exception
   end
@@ -50,5 +50,9 @@ describe Missingly::Matchers do
   it "should work through inheritence" do
     delegation_test.respond_to?("find_all_by_name").should be_true
     delegation_test.find_all_by_name.should be_a MatchData
+  end
+
+  it "should accept method arguments" do
+    search_class.find_by_name("arg_test").should == {foo: "arg_test"}
   end
 end
