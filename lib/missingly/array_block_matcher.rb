@@ -5,10 +5,12 @@ module Missingly
     attr_reader :array, :method_block, :options
 
     def initialize(array, options, method_block)
-      @array, @method_block, @options = array, method_block, options
+      @array = array
+      @method_block = method_block
+      @options = options
     end
 
-    def should_respond_to?(instance, name)
+    def should_respond_to?(_instance, name)
       array.include?(name)
     end
 
@@ -16,6 +18,8 @@ module Missingly
       method_name
     end
 
-    def matchable; array; end
+    def matchable
+      array
+    end
   end
 end

@@ -5,7 +5,9 @@ module Missingly
     attr_reader :array, :options, :delegate_name
 
     def initialize(array, options, delegate_name)
-      @array, @options, @delegate_name = array, options, delegate_name
+      @array = array
+      @options = options
+      @delegate_name = delegate_name
     end
 
     def should_respond_to?(instance, name)
@@ -14,6 +16,8 @@ module Missingly
       included_in_array && delegate_responds_to
     end
 
-    def matchable; array; end
+    def matchable
+      array
+    end
   end
 end

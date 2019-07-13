@@ -5,7 +5,9 @@ module Missingly
     attr_reader :regex, :options, :delegate_name
 
     def initialize(regex, options, delegate_name)
-      @regex, @options, @delegate_name = regex, options, delegate_name
+      @regex = regex
+      @options = options
+      @delegate_name = delegate_name
     end
 
     def should_respond_to?(instance, name)
@@ -14,6 +16,8 @@ module Missingly
       matches && delegate_responds_to
     end
 
-    def matchable; regex; end
+    def matchable
+      regex
+    end
   end
 end

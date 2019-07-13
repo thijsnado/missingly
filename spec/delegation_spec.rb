@@ -13,7 +13,7 @@ module Missingly
       end
     end
 
-    let(:proxy){ double }
+    let(:proxy) { double }
 
     let(:instance) do
       i = our_class.new
@@ -21,9 +21,9 @@ module Missingly
       i
     end
 
-    it "should delegate method to attribute passed to to option for arrays" do
+    it 'should delegate method to attribute passed to to option for arrays' do
       args = [1, 2]
-      prock = Proc.new{ puts "Don't call" }
+      prock = proc { puts "Don't call" }
 
       args_passed = nil
       block_passed = nil
@@ -38,9 +38,9 @@ module Missingly
       block_passed.should == prock
     end
 
-    it "should delegate method to attribute passed to to option for regexes" do
+    it 'should delegate method to attribute passed to to option for regexes' do
       args = [1, 2]
-      prock = Proc.new{ puts "Don't call" }
+      prock = proc { puts "Don't call" }
 
       args_passed = nil
       block_passed = nil

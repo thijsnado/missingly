@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'thread'
-
 module Missingly
   module Mutex
     @mutex = ::Mutex.new
@@ -13,7 +11,7 @@ module Missingly
 
   module Matchers
     module ClassMethods
-      def handle_missingly(matcher, options={}, &block)
+      def handle_missingly(matcher, options = {}, &block)
         undef_parent_missingly_methods matcher
         undef_normal_missingly_methods matcher
 
@@ -83,7 +81,7 @@ module Missingly
       end
 
       def missingly_methods
-        @missingly_methods ||= Hash.new()
+        @missingly_methods ||= {}
       end
 
       def missingly_methods_for_matcher(matcher)
@@ -95,9 +93,9 @@ module Missingly
       end
 
       def inherited(subclass)
-        matchers = self.missingly_matchers
+        matchers = missingly_matchers
         subclass.class_eval do
-          @missingly_matchers =  matchers.clone
+          @missingly_matchers = matchers.clone
         end
         missingly_subclasses << subclass
       end
@@ -123,7 +121,7 @@ module Missingly
       end
 
       def respond_to_missing?(method_name, include_all)
-        self.missingly_matchers.values.each do |matcher|
+        missingly_matchers.values.each do |matcher|
           return true if matcher.should_respond_to?(self, method_name.to_sym) && matcher.options[:class_method]
         end
         super
@@ -132,7 +130,7 @@ module Missingly
 
     def respond_to_missing?(method_name, include_all)
       self.class.missingly_matchers.values.each do |matcher|
-        return true if matcher.should_respond_to?(self, method_name.to_sym) && !(matcher.options[:class_method])
+        return true if matcher.should_respond_to?(self, method_name.to_sym) && !matcher.options[:class_method]
       end
       super
     end
