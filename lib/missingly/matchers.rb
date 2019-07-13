@@ -63,11 +63,7 @@ module Missingly
           begin
             undef_method method
           rescue NameError
-            eval <<-RUBY
-              class << self
-                undef_method #{method.inspect}
-              end
-            RUBY
+            (class << self; self; end).undef_method method
           end
         end
       end
@@ -108,7 +104,7 @@ module Missingly
           Missingly::Mutex.synchronize do
             missingly_methods_for_matcher(matcher.matchable) << method_name
 
-            returned_value = matcher.define(self, method_name)
+            matcher.define(self, method_name)
 
             missingly_subclasses.each do |subclass|
               subclass.undef_parent_missingly_methods matcher.matchable
@@ -155,8 +151,6 @@ module Missingly
       end
       super
     end
-
-    private
 
     def self.included(klass)
       klass.extend ClassMethods

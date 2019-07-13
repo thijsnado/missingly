@@ -3,7 +3,7 @@
 module Missingly
   class DelegateMatcher
     def define(instance, name)
-      instance.class.class_eval <<-RUBY, __FILE__, __LINE__
+      instance.class.class_eval <<-RUBY, __FILE__, __LINE__ + 1
         def #{name}(*args, &block)
           #{delegate_name}.#{name}(*args, &block)
         end
