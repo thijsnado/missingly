@@ -7,11 +7,11 @@ module Missingly
         klass = Class.new do
           include Missingly::Matchers
 
-          handle_missingly /foo/ do |*_args|
+          handle_missingly(/foo/) do |*_args|
             'foo'
           end
 
-          handle_missingly /foo/ do |*_args|
+          handle_missingly(/foo/) do |*_args|
             'bar'
           end
         end
@@ -21,7 +21,7 @@ module Missingly
         another_klass = Class.new do
           include Missingly::Matchers
 
-          handle_missingly /foo/ do |*_args|
+          handle_missingly(/foo/) do |*_args|
             'foo'
           end
         end
@@ -29,7 +29,7 @@ module Missingly
         another_klass.new.foo
 
         another_klass.module_eval do
-          handle_missingly /foo/ do |*_args|
+          handle_missingly(/foo/) do |*_args|
             'bar'
           end
         end

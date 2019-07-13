@@ -1,0 +1,6 @@
+Metrics:
+  Enabled: false
+Style/Documentation:
+  Enabled: false
+Lint/Void:
+  Enabled: false

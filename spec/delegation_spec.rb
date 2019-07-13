@@ -9,7 +9,7 @@ module Missingly
         include Missingly::Matchers
 
         handle_missingly [:derp], to: :proxy
-        handle_missingly /^find_by_(\w+)$/, to: :proxy
+        handle_missingly(/^find_by_(\w+)$/, to: :proxy)
       end
     end
 
@@ -27,9 +27,9 @@ module Missingly
 
       args_passed = nil
       block_passed = nil
-      proxy.should_receive(:derp) do |*_args|
-        args_passed = _args.first(2)
-        block_passed = _args.last
+      proxy.should_receive(:derp) do |*inner_args|
+        args_passed = inner_args.first(2)
+        block_passed = inner_args.last
       end
 
       instance.derp(*args, *prock)
@@ -44,9 +44,9 @@ module Missingly
 
       args_passed = nil
       block_passed = nil
-      proxy.should_receive(:find_by_id) do |*_args|
-        args_passed = _args.first(2)
-        block_passed = _args.last
+      proxy.should_receive(:find_by_id) do |*inner_args|
+        args_passed = inner_args.first(2)
+        block_passed = inner_args.last
       end
 
       instance.find_by_id(*args, *prock)

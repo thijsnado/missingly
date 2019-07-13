@@ -9,7 +9,7 @@ module Missingly
         Class.new do
           include Missingly::Matchers
 
-          handle_missingly /^find_by_(\w+)$/ do
+          handle_missingly(/^find_by_(\w+)$/) do
           end
         end
       end
@@ -37,7 +37,7 @@ module Missingly
         bar = Class.new(foo) do
           include Missingly::Matchers
 
-          handle_missingly /foo/ do
+          handle_missingly(/foo/) do
           end
         end
 
@@ -46,7 +46,7 @@ module Missingly
 
       it 'should work with multiple definitions' do
         our_class.module_eval do
-          handle_missingly /foo/ do
+          handle_missingly(/foo/) do
           end
         end
         instance.respond_to?('foo').should == true
@@ -61,7 +61,7 @@ module Missingly
 
           attr_accessor :matched_text, :args, :block, :expected_self
 
-          handle_missingly /^find_by_(\w+)$/ do |matches, *args, &block|
+          handle_missingly(/^find_by_(\w+)$/) do |matches, *args, &block|
             @expected_self = self
             @matched_text = matches[1]
             @args = args

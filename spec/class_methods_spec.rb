@@ -11,7 +11,7 @@ describe Missingly::Matchers do
         return { foo: args.first || 'bar' }
       end
 
-      handle_missingly /^find_all_by_(\w+)$/, class_method: true do |matches, *_args|
+      handle_missingly(/^find_all_by_(\w+)$/, class_method: true) do |matches, *_args|
         return matches
       end
     end

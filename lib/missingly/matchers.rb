@@ -130,7 +130,6 @@ module Missingly
       end
       super
     end
-    private :respond_to_missing?
 
     def method_missing(method_name, *args, &block)
       self.class.missingly_matchers.values.each do |matcher|

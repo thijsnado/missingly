@@ -31,7 +31,7 @@ module Missingly
           @hashes = hashes
         end
 
-        handle_missingly /^find_by_(\w+)$/, with: FindByMatcher do |fields, *args|
+        handle_missingly(/^find_by_(\w+)$/, with: FindByMatcher) do |fields, *args|
           hashes.find do |hash|
             fields.inject(true) do |fields_match, field|
               index_of_field = fields.index(field)
