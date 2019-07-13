@@ -8,6 +8,8 @@ module Missingly
       Class.new do
         include Missingly::Matchers
 
+        attr_accessor :proxy
+
         handle_missingly [:derp], to: :proxy
         handle_missingly(/^find_by_(\w+)$/, to: :proxy)
       end
@@ -17,7 +19,7 @@ module Missingly
 
     let(:instance) do
       i = our_class.new
-      allow(i).to receive(:proxy).and_return(proxy)
+      i.proxy = proxy
       i
     end
 
@@ -25,34 +27,18 @@ module Missingly
       args = [1, 2]
       prock = proc { puts "Don't call" }
 
-      args_passed = nil
-      block_passed = nil
-      proxy.should_receive(:derp) do |*inner_args|
-        args_passed = inner_args.first(2)
-        block_passed = inner_args.last
-      end
+      expect(proxy).to receive(:derp).with(*args, prock)
 
       instance.derp(*args, *prock)
-
-      args_passed.should == args
-      block_passed.should == prock
     end
 
     it 'should delegate method to attribute passed to to option for regexes' do
       args = [1, 2]
       prock = proc { puts "Don't call" }
 
-      args_passed = nil
-      block_passed = nil
-      proxy.should_receive(:find_by_id) do |*inner_args|
-        args_passed = inner_args.first(2)
-        block_passed = inner_args.last
-      end
+      expect(proxy).to receive(:find_by_id).with(*args, prock)
 
       instance.find_by_id(*args, *prock)
-
-      args_passed.should == args
-      block_passed.should == prock
     end
   end
 end

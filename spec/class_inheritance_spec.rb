@@ -20,7 +20,7 @@ describe Missingly::Matchers do
 
   it 'should work when called before parent' do
     b = subclass.new
-    b.foo.should eq :foo
+    expect(b.foo).to eq :foo
   end
 
   describe 'overriding methods' do
@@ -38,18 +38,18 @@ describe Missingly::Matchers do
     end
 
     it 'should work when called before parent' do
-      subclass_with_overrides.new.foo.should eq :super_duper
+      expect(subclass_with_overrides.new.foo).to eq :super_duper
     end
 
     it 'should work when called after parent' do
       super_class.new.foo
-      subclass_with_overrides.new.foo.should eq :super_duper
+      expect(subclass_with_overrides.new.foo).to eq :super_duper
     end
 
     it 'should work when subclass initiated before parent method defined' do
       subclass_with_overrides
       super_class.new.foo
-      subclass_with_overrides.new.foo.should eq :super_duper
+      expect(subclass_with_overrides.new.foo).to eq :super_duper
     end
   end
 
@@ -78,18 +78,18 @@ describe Missingly::Matchers do
     end
 
     it 'should work when called before parent' do
-      subclass_with_overrides.foo.should eq :super_duper
+      expect(subclass_with_overrides.foo).to eq :super_duper
     end
 
     it 'should work when called after parent' do
       super_class.foo
-      subclass_with_overrides.foo.should eq :super_duper
+      expect(subclass_with_overrides.foo).to eq :super_duper
     end
 
     it 'should work when subclass initiated before parent method defined' do
       subclass_with_overrides
       super_class.foo
-      subclass_with_overrides.foo.should eq :super_duper
+      expect(subclass_with_overrides.foo).to eq :super_duper
     end
   end
 end

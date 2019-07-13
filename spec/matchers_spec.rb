@@ -16,7 +16,7 @@ module Missingly
           end
         end
 
-        klass.new.foo.should eq('bar')
+        expect(klass.new.foo).to eq('bar')
 
         another_klass = Class.new do
           include Missingly::Matchers
@@ -34,7 +34,7 @@ module Missingly
           end
         end
 
-        another_klass.new.foo.should eq('bar')
+        expect(another_klass.new.foo).to eq('bar')
       end
     end
   end

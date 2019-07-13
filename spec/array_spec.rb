@@ -19,10 +19,10 @@ module Missingly
       end
 
       it 'should respond to methods that are included in array' do
-        instance.respond_to?(:derp).should == true
-        instance.respond_to?(:herp).should == true
-        instance.respond_to?('herp').should == true
-        instance.respond_to?('fluffy_buffy_bunnies').should == false
+        expect(instance.respond_to?(:derp)).to eq(true)
+        expect(instance.respond_to?(:herp)).to eq(true)
+        expect(instance.respond_to?('herp')).to eq(true)
+        expect(instance.respond_to?('fluffy_buffy_bunnies')).to eq(false)
       end
     end
 
@@ -51,10 +51,10 @@ module Missingly
         prock = proc { puts 'foo' }
         instance.derp(*args, &prock)
 
-        instance.expected_self.should == instance
-        instance.method_name.should == :derp
-        instance.args.should == args
-        instance.block.should == prock
+        expect(instance.expected_self).to eq(instance)
+        expect(instance.method_name).to eq(:derp)
+        expect(instance.args).to eq(args)
+        expect(instance.block).to eq(prock)
       end
 
       it 'should work with subsequent calls' do
@@ -63,10 +63,10 @@ module Missingly
         instance.derp(*args, &prock)
         instance.derp(*args, &prock)
 
-        instance.expected_self.should == instance
-        instance.method_name.should == :derp
-        instance.args.should == args
-        instance.block.should == prock
+        expect(instance.expected_self).to eq(instance)
+        expect(instance.method_name).to eq(:derp)
+        expect(instance.args).to eq(args)
+        expect(instance.block).to eq(prock)
       end
     end
   end

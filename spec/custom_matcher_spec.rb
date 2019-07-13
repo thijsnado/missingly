@@ -57,8 +57,8 @@ module Missingly
     end
 
     it 'should allow us to define custom matchers' do
-      our_instance.find_by_first_name_and_last_name('Bill', 'Douglas').should be_nil
-      our_instance.find_by_first_name_and_last_name('Bill', 'Clinton').should == { first_name: 'Bill', last_name: 'Clinton' }
+      expect(our_instance.find_by_first_name_and_last_name('Bill', 'Douglas')).to be_nil
+      expect(our_instance.find_by_first_name_and_last_name('Bill', 'Clinton')).to eq(first_name: 'Bill', last_name: 'Clinton')
     end
   end
 end

@@ -19,12 +19,12 @@ module Missingly
       end
 
       it 'should only respond to methods that match regular expression passed to missingly' do
-        instance.respond_to?('find_by_id').should == true
-        instance.respond_to?('fluffy_buffy_bunnies').should == false
+        expect(instance.respond_to?('find_by_id')).to eq(true)
+        expect(instance.respond_to?('fluffy_buffy_bunnies')).to eq(false)
       end
 
       it 'should not make respond_to_missing? public' do
-        instance.respond_to?('respond_to_missing?').should == false
+        expect(instance.respond_to?('respond_to_missing?')).to eq(false)
       end
 
       it 'should also work with inheritance' do
@@ -41,7 +41,7 @@ module Missingly
           end
         end
 
-        bar.new.respond_to?('this_should_work').should == true
+        expect(bar.new.respond_to?('this_should_work')).to eq(true)
       end
 
       it 'should work with multiple definitions' do
@@ -49,8 +49,8 @@ module Missingly
           handle_missingly(/foo/) do
           end
         end
-        instance.respond_to?('foo').should == true
-        instance.respond_to?('find_by_id').should == true
+        expect(instance.respond_to?('foo')).to eq(true)
+        expect(instance.respond_to?('find_by_id')).to eq(true)
       end
     end
 
@@ -79,10 +79,10 @@ module Missingly
         prock = proc { puts 'foo' }
         instance.find_by_id_and_first_name(*args, &prock)
 
-        instance.expected_self.should == instance
-        instance.matched_text.should == 'id_and_first_name'
-        instance.args.should == args
-        instance.block.should == prock
+        expect(instance.expected_self).to eq(instance)
+        expect(instance.matched_text).to eq('id_and_first_name')
+        expect(instance.args).to eq(args)
+        expect(instance.block).to eq(prock)
       end
 
       it 'should work with subsequent calls' do
@@ -91,10 +91,10 @@ module Missingly
         instance.find_by_id_and_first_name(*args, &prock)
         instance.find_by_id_and_first_name(*args, &prock)
 
-        instance.expected_self.should == instance
-        instance.matched_text.should == 'id_and_first_name'
-        instance.args.should == args
-        instance.block.should == prock
+        expect(instance.expected_self).to eq(instance)
+        expect(instance.matched_text).to eq('id_and_first_name')
+        expect(instance.args).to eq(args)
+        expect(instance.block).to eq(prock)
       end
 
       it 'should also work with arrays, but just passes method name instead of match object' do
@@ -111,10 +111,10 @@ module Missingly
         prock = proc { puts 'foo' }
         instance.derp(*args, &prock)
 
-        instance.expected_self.should == instance
-        instance.method_name.should == :derp
-        instance.args.should == args
-        instance.block.should == prock
+        expect(instance.expected_self).to eq(instance)
+        expect(instance.method_name).to eq(:derp)
+        expect(instance.args).to eq(args)
+        expect(instance.block).to eq(prock)
       end
     end
   end

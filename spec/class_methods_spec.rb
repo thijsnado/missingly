@@ -28,32 +28,32 @@ describe Missingly::Matchers do
   end
 
   it 'should not break normal method_missing' do
-    search_class.new.respond_to?('foo_bar_widget').should be_false
+    expect(search_class.new.respond_to?('foo_bar_widget')).to eq(false)
   end
 
   it 'should allow you to define class methods' do
-    search_class.respond_to?('find_by_name').should be_true
-    search_class.respond_to?('find_all_by_name').should be_true
-    search_class.find_all_by_name.should be_a MatchData
-    search_class.find_by_name.should be_a Hash
+    expect(search_class.respond_to?('find_by_name')).to eq(true)
+    expect(search_class.respond_to?('find_all_by_name')).to eq(true)
+    expect(search_class.find_all_by_name).to be_a MatchData
+    expect(search_class.find_by_name).to be_a Hash
   end
 
   it 'should support delegation matchers' do
-    delegation_test.respond_to?('find_by_foo').should be_true
-    delegation_test.find_by_foo.should be_true
+    expect(delegation_test.respond_to?('find_by_foo')).to eq(true)
+    expect(delegation_test.find_by_foo).to eq('foo')
   end
 
   it 'should not make class methods available to instances' do
-    search_class.new.respond_to?('find_by_name').should be_false
-    -> { search_class.new.find_by_name('foo') }.should raise_exception
+    expect(search_class.new.respond_to?('find_by_name')).to eq(false)
+    expect { search_class.new.find_by_name('foo') }.to raise_exception(NameError)
   end
 
   it 'should work through inheritence' do
-    delegation_test.respond_to?('find_all_by_name').should be_true
-    delegation_test.find_all_by_name.should be_a MatchData
+    expect(delegation_test.respond_to?('find_all_by_name')).to eq(true)
+    expect(delegation_test.find_all_by_name).to be_a MatchData
   end
 
   it 'should accept method arguments' do
-    search_class.find_by_name('arg_test').should == { foo: 'arg_test' }
+    expect(search_class.find_by_name('arg_test')).to eq(foo: 'arg_test')
   end
 end
