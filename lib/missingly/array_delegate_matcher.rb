@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Missingly
   class ArrayDelegateMatcher < DelegateMatcher
     attr_reader :array, :options, :delegate_name

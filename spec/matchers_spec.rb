@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Missingly
   describe Matchers do
     describe "#handle_missingly" do

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Missingly
   class DelegateMatcher
     def define(instance, name)

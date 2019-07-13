@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Missingly
   class BlockMatcher
     def define(instance, method_name)

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Missingly
   class RegexDelegateMatcher < DelegateMatcher
     attr_reader :regex, :options, :delegate_name

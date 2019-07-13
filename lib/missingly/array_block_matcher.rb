@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Missingly
   class ArrayBlockMatcher < BlockMatcher
     attr_reader :array, :method_block, :options

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Missingly
   class RegexBlockMatcher < BlockMatcher
     attr_reader :regex, :method_block, :options
