@@ -63,7 +63,7 @@ module Missingly
           begin
             undef_method method
           rescue NameError
-            (class << self; self; end).undef_method method
+            (class << self; self; end).send(:undef_method, method)
           end
         end
       end
