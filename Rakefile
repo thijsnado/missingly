@@ -1,11 +1,17 @@
-require "bundler/setup"
-require "bundler/gem_tasks"
+# frozen_string_literal: true
 
 require 'rspec/core/rake_task'
+require 'rubocop/rake_task'
 
-desc 'Run the specs'
-RSpec::Core::RakeTask.new do |r|
-  r.verbose = false
+RuboCop::RakeTask.new(:rubocop)
+RSpec::Core::RakeTask.new(:spec)
+
+namespace :missingly do
+  desc 'runs specs and rubocop'
+  task :ci do
+    Rake::Task['rubocop'].invoke
+    Rake::Task['spec'].invoke
+  end
 end
 
-task :default => :spec
+task default: 'missingly:ci'

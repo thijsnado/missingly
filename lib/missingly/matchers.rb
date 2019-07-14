@@ -1,4 +1,4 @@
-require 'thread'
+# frozen_string_literal: true
 
 module Missingly
   module Mutex
@@ -11,7 +11,7 @@ module Missingly
 
   module Matchers
     module ClassMethods
-      def handle_missingly(matcher, options={}, &block)
+      def handle_missingly(matcher, options = {}, &block)
         undef_parent_missingly_methods matcher
         undef_normal_missingly_methods matcher
 
@@ -63,11 +63,7 @@ module Missingly
           begin
             undef_method method
           rescue NameError
-            eval <<-RUBY
-              class << self
-                undef_method #{method.inspect}
-              end
-            RUBY
+            (class << self; self; end).send(:undef_method, method)
           end
         end
       end
@@ -81,7 +77,7 @@ module Missingly
       end
 
       def missingly_methods
-        @missingly_methods ||= Hash.new()
+        @missingly_methods ||= {}
       end
 
       def missingly_methods_for_matcher(matcher)
@@ -93,9 +89,9 @@ module Missingly
       end
 
       def inherited(subclass)
-        matchers = self.missingly_matchers
+        matchers = missingly_matchers
         subclass.class_eval do
-          @missingly_matchers =  matchers.clone
+          @missingly_matchers = matchers.clone
         end
         missingly_subclasses << subclass
       end
@@ -108,7 +104,7 @@ module Missingly
           Missingly::Mutex.synchronize do
             missingly_methods_for_matcher(matcher.matchable) << method_name
 
-            returned_value = matcher.define(self, method_name)
+            matcher.define(self, method_name)
 
             missingly_subclasses.each do |subclass|
               subclass.undef_parent_missingly_methods matcher.matchable
@@ -121,7 +117,7 @@ module Missingly
       end
 
       def respond_to_missing?(method_name, include_all)
-        self.missingly_matchers.values.each do |matcher|
+        missingly_matchers.values.each do |matcher|
           return true if matcher.should_respond_to?(self, method_name.to_sym) && matcher.options[:class_method]
         end
         super
@@ -130,11 +126,10 @@ module Missingly
 
     def respond_to_missing?(method_name, include_all)
       self.class.missingly_matchers.values.each do |matcher|
-        return true if matcher.should_respond_to?(self, method_name.to_sym) && !(matcher.options[:class_method])
+        return true if matcher.should_respond_to?(self, method_name.to_sym) && !matcher.options[:class_method]
       end
       super
     end
-    private :respond_to_missing?
 
     def method_missing(method_name, *args, &block)
       self.class.missingly_matchers.values.each do |matcher|
@@ -155,8 +150,6 @@ module Missingly
       end
       super
     end
-
-    private
 
     def self.included(klass)
       klass.extend ClassMethods

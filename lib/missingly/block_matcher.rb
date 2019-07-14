@@ -1,7 +1,8 @@
+# frozen_string_literal: true
+
 module Missingly
   class BlockMatcher
     def define(instance, method_name)
-
       klass = instance.class == Class ? instance : instance.class
 
       if instance.class == Class
